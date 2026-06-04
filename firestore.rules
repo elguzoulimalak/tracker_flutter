@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users collection - each user can only access their own documents
+    match /users/{uid} {
+      allow read, write: if request.auth.uid == uid;
+
+      // Vehicles subcollection
+      match /vehicles/{vehicleId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      // Fuel entries subcollection
+      match /fuelEntries/{fuelEntryId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      // Maintenance categories subcollection
+      match /maintenanceCategories/{categoryId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      // Maintenances subcollection
+      match /maintenances/{maintenanceId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+    }
+  }
+}
